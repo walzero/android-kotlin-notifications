@@ -38,11 +38,23 @@ private val FLAGS = 0
  * @param context, activity context.
  */
 fun NotificationManager.sendNotification(messageBody: String, applicationContext: Context) {
+
+    val contentIntent = Intent(applicationContext, MainActivity::class.java)
+
+    val contentPendingIntent = PendingIntent.getActivity(
+        applicationContext,
+        NOTIFICATION_ID,
+        contentIntent,
+        PendingIntent.FLAG_UPDATE_CURRENT
+    )
+
     with(applicationContext) {
         val builder = NotificationCompat.Builder(
             this@with,
             getString(R.string.egg_notification_channel_id)
         )
+            .setContentIntent(contentPendingIntent)
+            .setAutoCancel(true)
             .setSmallIcon(R.drawable.cooked_egg)
             .setContentTitle(getString(R.string.notification_title))
             .setContentText(messageBody)
@@ -52,4 +64,6 @@ fun NotificationManager.sendNotification(messageBody: String, applicationContext
     }
 }
 
-// TODO: Step 1.14 Cancel all notifications
+fun NotificationManager.cancelNotifications() {
+    cancelAll()
+}
