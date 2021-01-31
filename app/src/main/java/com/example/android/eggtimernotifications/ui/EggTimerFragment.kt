@@ -24,17 +24,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.android.eggtimernotifications.R
 import com.example.android.eggtimernotifications.databinding.FragmentEggTimerBinding
-import com.google.firebase.messaging.FirebaseMessaging
+import com.example.android.eggtimernotifications.extensions.notificationManager
 
 class EggTimerFragment : Fragment() {
 
     private val TOPIC = "breakfast"
+
+    private val notificationManager by lazy { requireActivity().notificationManager() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,14 +52,29 @@ class EggTimerFragment : Fragment() {
         binding.lifecycleOwner = this.viewLifecycleOwner
 
         // TODO: Step 1.7 call create channel
+        createChannel(
+            getString(R.string.egg_notification_channel_id),
+            getString(R.string.egg_notification_channel_name)
+        )
 
         return binding.root
     }
 
     private fun createChannel(channelId: String, channelName: String) {
-        // TODO: Step 1.6 START create a channel
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel = NotificationChannel(
+                channelId,
+                channelName,
+                NotificationManager.IMPORTANCE_LOW
+            ).apply {
+                enableLights(true)
+                lightColor = Color.RED
+                enableVibration(true)
+                description = "Time for breakfast"
+            }
 
-        // TODO: Step 1.6 END create a channel
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
 
     }
 
