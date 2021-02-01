@@ -41,7 +41,6 @@ private val FLAGS = 0
 fun NotificationManager.sendNotification(messageBody: String, applicationContext: Context) {
 
     val contentIntent = Intent(applicationContext, MainActivity::class.java)
-
     val contentPendingIntent = PendingIntent.getActivity(
         applicationContext,
         NOTIFICATION_ID,
@@ -59,6 +58,14 @@ fun NotificationManager.sendNotification(messageBody: String, applicationContext
         .bigPicture(eggImage)
         .bigLargeIcon(null)
 
+    val snoozeIntent = Intent(applicationContext, SnoozeReceiver::class.java)
+    val snoozePendingIntent = PendingIntent.getBroadcast(
+        applicationContext,
+        REQUEST_CODE,
+        snoozeIntent,
+        FLAGS
+    )
+
     with(applicationContext) {
         val builder = NotificationCompat.Builder(
             this@with,
@@ -71,6 +78,11 @@ fun NotificationManager.sendNotification(messageBody: String, applicationContext
             .setContentText(messageBody)
             .setStyle(bigPictureStyle)
             .setLargeIcon(eggImage)
+            .addAction(
+                R.drawable.egg_icon,
+                applicationContext.getString(R.string.snooze),
+                snoozePendingIntent
+            )
 
         notify(NOTIFICATION_ID, builder.build())
 
