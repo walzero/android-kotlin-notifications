@@ -20,6 +20,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.core.app.NotificationCompat
 import com.example.android.eggtimernotifications.MainActivity
@@ -48,6 +49,16 @@ fun NotificationManager.sendNotification(messageBody: String, applicationContext
         PendingIntent.FLAG_UPDATE_CURRENT
     )
 
+    val eggImage = BitmapFactory.decodeResource(
+        applicationContext.resources,
+        R.drawable.cooked_egg
+    )
+
+    val bigPictureStyle = NotificationCompat
+        .BigPictureStyle()
+        .bigPicture(eggImage)
+        .bigLargeIcon(null)
+
     with(applicationContext) {
         val builder = NotificationCompat.Builder(
             this@with,
@@ -58,6 +69,8 @@ fun NotificationManager.sendNotification(messageBody: String, applicationContext
             .setSmallIcon(R.drawable.cooked_egg)
             .setContentTitle(getString(R.string.notification_title))
             .setContentText(messageBody)
+            .setStyle(bigPictureStyle)
+            .setLargeIcon(eggImage)
 
         notify(NOTIFICATION_ID, builder.build())
 

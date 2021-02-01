@@ -58,7 +58,6 @@ class EggTimerViewModel(private val app: Application) : AndroidViewModel(app) {
     val isAlarmOn: LiveData<Boolean>
         get() = _alarmOn
 
-
     private lateinit var timer: CountDownTimer
 
     init {
