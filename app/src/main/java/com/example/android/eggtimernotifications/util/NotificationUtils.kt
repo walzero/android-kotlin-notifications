@@ -78,6 +78,7 @@ fun NotificationManager.sendNotification(messageBody: String, applicationContext
             .setContentText(messageBody)
             .setStyle(bigPictureStyle)
             .setLargeIcon(eggImage)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .addAction(
                 R.drawable.egg_icon,
                 applicationContext.getString(R.string.snooze),
