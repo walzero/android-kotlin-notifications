@@ -2,6 +2,7 @@ package com.example.android.eggtimernotifications.extensions
 
 import android.app.NotificationManager
 import android.content.Context
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 
 fun Context.notificationManager(): NotificationManager {
@@ -9,4 +10,8 @@ fun Context.notificationManager(): NotificationManager {
         this,
         NotificationManager::class.java
     ) as NotificationManager
+}
+
+fun Context.showShortToast(message: String) {
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }

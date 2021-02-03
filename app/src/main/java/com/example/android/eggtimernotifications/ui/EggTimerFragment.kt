@@ -24,12 +24,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.android.eggtimernotifications.R
 import com.example.android.eggtimernotifications.databinding.FragmentEggTimerBinding
 import com.example.android.eggtimernotifications.extensions.notificationManager
+import com.example.android.eggtimernotifications.extensions.showShortToast
+import com.google.firebase.messaging.FirebaseMessaging
 
 class EggTimerFragment : Fragment() {
 
@@ -40,7 +43,7 @@ class EggTimerFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         val binding: FragmentEggTimerBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_egg_timer, container, false
@@ -51,11 +54,8 @@ class EggTimerFragment : Fragment() {
         binding.eggTimerViewModel = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
 
-        // TODO: Step 1.7 call create channel
-        createChannel(
-            getString(R.string.egg_notification_channel_id),
-            getString(R.string.egg_notification_channel_name)
-        )
+        createChannels()
+        subscribeTopic()
 
         return binding.root
     }
@@ -77,6 +77,39 @@ class EggTimerFragment : Fragment() {
             notificationManager.createNotificationChannel(notificationChannel)
         }
 
+    }
+
+    private fun subscribeTopic() {
+        FirebaseMessaging.getInstance().subscribeToTopic(TOPIC)
+            .addOnCompleteListener { task ->
+                val messageId = when(task.isSuccessful) {
+                    true -> R.string.message_subscribed
+                    false -> R.string.message_subscribe_failed
+                }
+
+                with(requireContext()) {
+                    showShortToast(getString(messageId))
+                }
+            }
+    }
+
+    private fun createChannels() {
+        createEggNotificationChannel()
+        createEggPushNotificationChannel()
+    }
+
+    private fun createEggNotificationChannel() {
+        createChannel(
+            getString(R.string.egg_notification_channel_id),
+            getString(R.string.egg_notification_channel_name)
+        )
+    }
+
+    private fun createEggPushNotificationChannel() {
+        createChannel(
+            getString(R.string.breakfast_notification_channel_id),
+            getString(R.string.breakfast_notification_channel_name)
+        )
     }
 
     companion object {
